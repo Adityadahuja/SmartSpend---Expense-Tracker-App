@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8 animate-fade-in-down">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">About SmartSpend</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-400">Simplifying personal finance for everyone.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Our Mission</h3>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                SmartSpend is designed to help students and individuals take control of their financial lives.
+                We believe that tracking expenses shouldn't be a chore, but a simple habit that leads to financial
+                freedom.
+            </p>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                Our goal is to provide a clean, intuitive, and privacy-focused tool that gives you clear insights into
+                your spending habits without any clutter.
+            </p>
+        </div>
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-8 flex items-center justify-center">
+            <div class="text-9xl">🚀</div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 border border-gray-100 dark:border-gray-700 mt-12">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Meet the Team</h3>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-8">This project was passionately created by:</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <p class="font-bold text-gray-900 dark:text-white">Aditya Dahuja</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <p class="font-bold text-gray-900 dark:text-white">Bhavya Kumar Bohra</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <p class="font-bold text-gray-900 dark:text-white">Chinmay Bhatt</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <p class="font-bold text-gray-900 dark:text-white">Divyanshu Kumar</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <p class="font-bold text-gray-900 dark:text-white">Garv Mittal</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 border border-gray-100 dark:border-gray-700 mt-12">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Why Choose SmartSpend?</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="text-center p-4">
+                <div
+                    class="bg-indigo-100 dark:bg-indigo-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    🔒</div>
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Privacy First</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Your data stays local. We don't track you or sell
+                    your information.</p>
+            </div>
+            <div class="text-center p-4">
+                <div
+                    class="bg-pink-100 dark:bg-pink-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    ⚡</div>
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Fast & Simple</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Built for speed. Add transactions in seconds and get
+                    instant insights.</p>
+            </div>
+            <div class="text-center p-4">
+                <div
+                    class="bg-violet-100 dark:bg-violet-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    📊</div>
+                <h4 class="font-bold text-gray-900 dark:text-white mb-2">Clear Analytics</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Visualize your spending with beautiful,
+                    easy-to-understand charts.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-fade-in-down">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Overview of your financial health</p>
+        </div>
+        <a href="{{ url_for('expense.add_expense') }}"
+            class="bg-gradient-to-r from-primary to-accent hover:from-indigo-600 hover:to-violet-600 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-primary/30 flex items-center gap-2 transform hover:scale-105">
+            <span>+</span> Add Transaction
+        </a>
+    </div>
+
+    <!-- Assistant Section -->
+    {% if assistant %}
+    <div class="glass rounded-2xl p-6 animate-fade-in-down" style="animation-delay: 0.05s">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Expense Assistant
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="col-span-2">
+                <p class="text-gray-700 dark:text-gray-300 text-lg">{{ assistant.advice }}</p>
+            </div>
+            <div class="flex flex-col justify-center items-end">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Monthly Savings</span>
+                <span
+                    class="text-2xl font-bold {% if assistant.savings >= 0 %}text-success{% else %}text-danger{% endif %}">
+                    ₹{{ "%.2f"|format(assistant.savings) }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Balance -->
+        <div class="glass rounded-2xl p-6 hover-card animate-fade-in-down" style="animation-delay: 0.1s">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Current
+                    Balance</h3>
+                <div class="p-3 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white">₹{{ "%.2f"|format(stats.balance) }}</p>
+        </div>
+
+        <!-- Total Income -->
+        <div class="glass rounded-2xl p-6 hover-card animate-fade-in-down" style="animation-delay: 0.2s">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Income
+                </h3>
+                <div class="p-3 bg-green-100 dark:bg-green-500/20 rounded-xl text-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-success">₹{{ "%.2f"|format(stats.total_income) }}</p>
+        </div>
+
+        <!-- Total Expense -->
+        <div class="glass rounded-2xl p-6 hover-card animate-fade-in-down" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Expense
+                </h3>
+                <div class="p-3 bg-red-100 dark:bg-red-500/20 rounded-xl text-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-danger">₹{{ "%.2f"|format(stats.total_expense) }}</p>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Bar Chart (Daily Activity) -->
+        <div class="glass rounded-2xl p-6 animate-fade-in-down" style="animation-delay: 0.5s">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Daily Activity</h3>
+            <div class="h-80">
+                <canvas id="dailyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Pie Chart (Monthly Breakdown) -->
+        <div class="glass rounded-2xl p-6 animate-fade-in-down" style="animation-delay: 0.6s">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Monthly Expenses (Current Month)</h3>
+            <div class="h-80 flex items-center justify-center">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const analysisData = {{ data | tojson
+    }};
+
+    // Daily Bar Chart
+    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+    renderBarChart(dailyCtx, analysisData.daily_activity);
+
+    // Monthly Pie Chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    renderPieChart(monthlyCtx, analysisData.monthly_breakdown);
+    });
+</script>
+{% endblock %}

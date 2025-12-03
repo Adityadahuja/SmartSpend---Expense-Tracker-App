@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSpend - {% block title %}Dashboard{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1', // Indigo 500
+                        secondary: '#ec4899', // Pink 500
+                        accent: '#8b5cf6', // Violet 500
+                        dark: '#0f172a', // Slate 900
+                        surface: '#1e293b', // Slate 800
+                        success: '#10b981', // Emerald 500
+                        danger: '#ef4444', // Red 500
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 text-gray-900 dark:bg-dark dark:text-gray-100 transition-colors duration-300 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        {% if current_user.is_authenticated and request.endpoint not in ['auth.login', 'auth.register'] %}
+        <!-- Sidebar -->
+        <aside
+            class="w-64 bg-white/80 dark:bg-surface/80 backdrop-blur-xl border-r border-gray-200 dark:border-gray-700 hidden md:flex flex-col z-20">
+            <div class="p-6 flex items-center justify-center border-b border-gray-200 dark:border-gray-700">
+                <a href="{{ url_for('dashboard.index') }}" class="flex items-center gap-3 group">
+                    <div class="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h1
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                        SmartSpend
+                    </h1>
+                </a>
+            </div>
+            <nav class="flex-1 px-4 space-y-3 mt-4">
+                <a href="{{ url_for('dashboard.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">📊</span> Dashboard
+                </a>
+                <a href="{{ url_for('expense.list_expenses') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">💸</span> Transactions
+                </a>
+                <a href="{{ url_for('dashboard.analysis') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">📈</span> Analysis
+                </a>
+                <a href="{{ url_for('settings.account') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">👤</span> Account
+                </a>
+                <a href="{{ url_for('info.about') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">ℹ️</span> About Us
+                </a>
+                <a href="{{ url_for('info.contact') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-indigo-50 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">📧</span> Contact Us
+                </a>
+                <a href="{{ url_for('auth.logout') }}"
+                    class="flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-all duration-200 group">
+                    <span class="group-hover:scale-110 transition-transform">🚪</span> Logout
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                <button id="theme-toggle"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 rounded-xl text-sm font-medium transition hover:bg-gray-200 dark:hover:bg-white/10">
+                    <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </aside>
+        {% endif %}
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden relative">
+            <!-- Background Gradients -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+                <div
+                    class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-3xl opacity-50 dark:opacity-20">
+                </div>
+                <div
+                    class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full blur-3xl opacity-50 dark:opacity-20">
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated and request.endpoint not in ['auth.login', 'auth.register'] %}
+            <!-- Mobile Header -->
+            <header
+                class="md:hidden bg-white/80 dark:bg-surface/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 p-4 flex justify-between items-center z-20">
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                    SmartSpend</h1>
+                <button class="text-gray-600 dark:text-gray-300">
+                    ☰
+                </button>
+            </header>
+            {% endif %}
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 scroll-smooth">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="glass border-l-4 border-primary text-gray-800 dark:text-gray-200 p-4 mb-6 rounded-r-xl shadow-lg animate-fade-in-down"
+                    role="alert">
+                    <p>{{ message }}</p>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+
+        // Check local storage
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light Mode';
+        } else {
+            html.classList.remove('dark');
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'Dark Mode';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

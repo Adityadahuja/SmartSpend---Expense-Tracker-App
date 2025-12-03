@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Account Settings</h1>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-8 space-y-8">
+                <!-- User Profile Info -->
+                <div class="flex items-center space-x-4 pb-8 border-b border-gray-200 dark:border-gray-700">
+                    <div class="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                        👤
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ current_user.name }}</h2>
+                        <p class="text-gray-600 dark:text-gray-400">{{ current_user.email }}</p>
+                    </div>
+                </div>
+
+                <!-- Salary Settings -->
+                <form method="POST" action="{{ url_for('settings.account') }}" class="space-y-6">
+                    <div>
+                        <label for="salary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Monthly Salary
+                        </label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">$</span>
+                            </div>
+                            <input type="number" name="salary" id="salary" step="0.01" min="0" required
+                                value="{{ current_user.salary }}"
+                                class="w-full pl-7 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            This amount is used to calculate your savings and provide financial advice.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" name="log_transaction" id="log_transaction"
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="log_transaction" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                            Log this as a new income transaction
+                        </label>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full bg-primary hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02]">
+                            Update Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

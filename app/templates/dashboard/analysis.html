@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Detailed Analysis</h2>
+    </div>
+
+    <!-- Export Section -->
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 animate-fade-in-down">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Export Data</h3>
+        <form action="{{ url_for('expense.export_expenses') }}" method="POST" class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start
+                    Date</label>
+                <input type="date" name="start_date" id="start_date" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-dark/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition">
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End
+                    Date</label>
+                <input type="date" name="end_date" id="end_date" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-dark/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition">
+            </div>
+            <button type="submit"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Excel
+            </button>
+        </form>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">* Maximum date range is 30 days.</p>
+    </div>
+
+    <!-- DSA Insights -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Top Categories List -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 lg:col-span-1">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Top Categories</h3>
+            <div class="space-y-4">
+                {% for category, amount in data.category_breakdown.items() %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">{{ category }}</span>
+                    <span class="font-bold text-gray-900 dark:text-white">₹{{ "%.2f"|format(amount) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Cumulative Spending Table (Prefix Sum) -->
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 lg:col-span-2">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Daily Cumulative Spending (Prefix Sum)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                            <th class="pb-3 font-semibold text-gray-600 dark:text-gray-400">Date</th>
+                            <th class="pb-3 font-semibold text-gray-600 dark:text-gray-400">Daily Total</th>
+                            <th class="pb-3 font-semibold text-gray-600 dark:text-gray-400">Cumulative Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        {% for item in data.prefix_sum %}
+                        <tr>
+                            <td class="py-3 text-gray-700 dark:text-gray-300">{{ item.date }}</td>
+                            <td class="py-3 text-gray-700 dark:text-gray-300">₹{{ "%.2f"|format(item.daily_total) }}
+                            </td>
+                            <td class="py-3 font-medium text-primary">₹{{ "%.2f"|format(item.cumulative_total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
